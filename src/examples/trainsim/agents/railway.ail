@@ -1,0 +1,9 @@
+env = trainsim.RailwayEnvironment
+
+mas.agent.1.file = src/examples/trainsim/train.eass
+mas.agent.1.builder = eass.EASSAgentBuilder
+mas.agent.1.name = train0
+
+log.warning = ajpf.MCAPLAgent,ajpf.MCAPLcontroller
+log.info = eass.mas.DefaultEnvironment,trainsim.RailwayEnvironment
+log.format = brief

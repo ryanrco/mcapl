@@ -57,6 +57,11 @@
     	<include name="lib/3rdparty/system-rules-1.16.0.jar"/>
     	<include name="lib/3rdparty/json-simple-1.1.1.jar"/>
     	<include name="lib/3rdparty/mapdbWrapper.jar"/>
+
+
+        <include name="lib/graphstream/gs-algo-2.0.jar"/>
+        <include name="lib/graphstream/gs-core-2.0.jar"/>
+        <include name="lib/graphstream/gs-ui-swing-2.0.jar"/>
    </fileset>
 
 
