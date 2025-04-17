@@ -1,0 +1,40 @@
+DGS004
+rail_network 0 0
+
+#Stations
+an S1 x=0 y=0 label:S1
+an S2 x=0.25 y=0.15 label:S2
+an S3 x=0.5 y=0.25 label:S3
+an S4 x=0.5 y=-0.25 label:S4
+an S5 x=0.65 y=-0.25 label:S5
+an S6 x=0.70 y=-0.35 label:S6
+an S7 x=0.15 y=0.25 label:S7
+an S8 x=0.35 y=-0.25 label:S8
+an S9 x=0.35 y=0.35 label:S9
+an S10 x=0.50 y=0.50 label:S10
+an S11 x=0.25 y=0.40 label:S11
+an S12 x=0.25 y=-0.5 label:S12
+
+
+#Tracks
+ae track_1_to_7 S1 S7
+ae track_1_to_2 S1 S2
+ae track_1_to_12 S1 > S12
+ae track_2_to_7 S2 S7
+ae track_2_to_3 S2 > S3
+ae track_2_to_8 S2 S8
+ae track_3_to_2 S3 > S2
+ae track_3_to_4 S3 S4
+ae track_3_to_5 S3 S5
+ae track_3_to_10 S3 > S10
+ae track_4_to_8 S4 > S8
+ae track_4_to_5 S4 > S5
+ae track_4_to_12 S4 > S12
+ae track_5_to_4 S5 > S4
+ae track_5_to_6 S5 S6
+ae track_7_to_9 S7 S9
+ae track_9_to_10 S9 S10
+ae track_9_to_11 S9 S11
+ae track_8_to_4 S8 > S4
+ae track_10_to_3 S10 > S3
+ae track_12_to_1 S12 > S1

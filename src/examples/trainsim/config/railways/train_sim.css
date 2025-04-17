@@ -1,0 +1,22 @@
+node {
+	size: 75px, 75px;
+	shape: circle;
+	fill-color: lightblue;
+	stroke-mode: plain;
+	stroke-color: black;
+}
+
+
+node.train {
+    size: 25px, 25px;
+    fill-color: red;
+    z-index: 100;
+}
+
+edge {
+    size: 2px;
+}
+
+edge.occupied {
+	fill-color: red;
+}

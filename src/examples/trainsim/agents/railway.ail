@@ -1,6 +1,6 @@
 env = trainsim.RailwayEnvironment
 
-mas.agent.1.file = src/examples/trainsim/train.eass
+mas.agent.1.file = src/examples/trainsim/agents/train.eass
 mas.agent.1.builder = eass.EASSAgentBuilder
 mas.agent.1.name = train0
 

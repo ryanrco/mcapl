@@ -21,7 +21,7 @@
 // http://www.csc.liv.ac.uk/~lad
 //
 //----------------------------------------------------------------------------
-package trainsim;
+package trainsim.config;
 
 import ajpf.MCAPLcontroller;
 
