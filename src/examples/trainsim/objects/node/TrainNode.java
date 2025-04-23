@@ -1,57 +1,47 @@
-package trainsim.objects;
+package trainsim.objects.node;
 
 import org.graphstream.graph.Node;
-import trainsim.pathfinder.TrainRoute;
-
-import javax.swing.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import static trainsim.TrainSimUI.frame;
-import static trainsim.TrainSimUI.railway;
+import trainsim.objects.AutonomousTrain;
+import trainsim.pathfinder.ATRoute;
 
 public class TrainNode extends SimNode {
 
     int currentStep = 0;
-    int totalSteps = 20;
-    boolean moving = true;
+    int totalSteps = 5000;
 
-    private final TrainRoute trainRoute;
+    private final ATRoute trainRoute;
 
-    public TrainNode(TrainRoute trainRoute, Node node) {
+    public TrainNode(ATRoute trainRoute, Node node) {
         super(node);
         this.trainRoute = trainRoute;
+        this.setPosition(new double[]{0,0});
 
     }
 
-
-    public void step() {
-        if (!moving) return;
+    public void step(AutonomousTrain train) {
         if (currentStep > totalSteps) {
-            moving = false;
+            currentStep = 0;
             return;
         }
+        currentStep++;
 
-        // interpolate and set position
         double t = currentStep / (double) totalSteps;
+        Node source = trainRoute.getSource().node;
+        Node target = trainRoute.getNextStop().getSimNode().node;
 
-        Node source = trainRoute.source.getNode().node;
-        Node target = trainRoute.target.getNode().node;;
 
         double x1 = source.getNumber("x"), x2 = target.getNumber("x");
         double y1 = source.getNumber("y"), y2 = target.getNumber("y");
         double x = x1 + t * (x2 - x1);
         double y = y1 + t * (y2 - y1);
+
         setPosition(new double[]{x, y});
-        currentStep++;
+
     }
 
 
-
-    private void setPosition(double[] pos){
+    public void setPosition(double[] pos){
         node.setAttribute("x", pos[0]);
         node.setAttribute("y", pos[1]);
     }
-
 }

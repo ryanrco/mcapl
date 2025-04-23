@@ -1,22 +1,48 @@
 node {
-	size: 75px, 75px;
-	shape: circle;
-	fill-color: lightblue;
-	stroke-mode: plain;
-	stroke-color: black;
+    shape: circle;
+    size: 40px;
+    fill-color: lightsteelblue;
+    stroke-color: steelblue;
+    stroke-width: 2px;
+}
+
+node.accepting {
+    shape: diamond;
+    size: 15px;
+    stroke-color: black;
+    stroke-width: 2px;
+    fill-color: green;
+}
+
+node.blocking {
+    shape: diamond;
+    size: 15px;
+    stroke-color: black;
+    stroke-width: 2px;
+    fill-color: red;
+}
+
+node.lidar {
+   fill-color: purple;
 }
 
 
 node.train {
-    size: 25px, 25px;
-    fill-color: red;
+    shape: box;
+    size: 20px;
+    fill-color: slategray;
+    stroke-color: dimgray;
+    stroke-width: 2px;
     z-index: 100;
 }
 
 edge {
     size: 2px;
+    shape: line;
 }
 
 edge.occupied {
 	fill-color: red;
 }
+
+

@@ -1,4 +1,4 @@
-package trainsim.objects;
+package trainsim.objects.node;
 
 import org.graphstream.graph.Node;
 
@@ -11,7 +11,6 @@ public class SimNode {
     }
 
     private double[] getPosition(){
-
         return new double[]{node.getNumber("x"),node.getNumber("y")};
     }
 
@@ -19,6 +18,7 @@ public class SimNode {
     public void setStyle(String style){
         node.setAttribute("ui.class", style);
     }
+
 
 
     public double getX(){

@@ -15,11 +15,9 @@ import ail.mas.vehicle.Sensor;
 import ail.mas.vehicle.Vehicle;
 import ail.mas.vehicle.VehicleEnv;
 import ail.mas.vehicle.VehicleInterface;
-import ail.mas.DefaultEnvironment;
 import ail.mas.MAS;
 import ail.semantics.AILAgent;
 import eass.semantics.EASSAgent;
-import gov.nasa.jpf.annotation.FilterField;
 import ail.syntax.Action;
 import ail.syntax.BroadcastSendAction;
 import ail.syntax.Literal;
@@ -348,7 +346,7 @@ public class EASSVehicle implements VehicleInterface, EASSEnv {
 		for (Sensor s: sensors) {
 			s.addPercept(l);
 		}
-		
+
 		env.notifyListeners(abstraction.getAgName());
 	}
 
@@ -471,7 +469,7 @@ public class EASSVehicle implements VehicleInterface, EASSEnv {
 		if (per != null && agName != null) {
 			ArrayList<Literal> agl = agSharedBeliefs.get(agName);
 			if (agl == null) {
-				agl = new ArrayList<Literal>();
+				agl = new ArrayList<>();
 				uptodateAgs.remove(agName);
 				agl.add(per);
 				agSharedBeliefs.put( agName, agl);

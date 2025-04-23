@@ -15,5 +15,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="3rdparty" level="project" />
     <orderEntry type="library" name="eis" level="project" />
+    <orderEntry type="library" name="gs-algo-2.0" level="project" />
   </component>
 </module>

@@ -40,6 +40,7 @@ import ajpf.util.AJPFLogger;
  *
  */
 public class SimpleGPS implements Sensor {
+
 	Predicate position;
 	
 	static final String logname = "eass.sticky_wheel.SimpleGPS";

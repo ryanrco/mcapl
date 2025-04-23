@@ -7,34 +7,84 @@ an S2 x=0.25 y=0.15 label:S2
 an S3 x=0.5 y=0.25 label:S3
 an S4 x=0.5 y=-0.25 label:S4
 an S5 x=0.65 y=-0.25 label:S5
-an S6 x=0.70 y=-0.35 label:S6
 an S7 x=0.15 y=0.25 label:S7
 an S8 x=0.35 y=-0.25 label:S8
 an S9 x=0.35 y=0.35 label:S9
 an S10 x=0.50 y=0.50 label:S10
-an S11 x=0.25 y=0.40 label:S11
 an S12 x=0.25 y=-0.5 label:S12
 
+#Signalling Box
+an SB1 x=0.152 y=-0.237
+an SB2 x=0.098 y=-0.263
+an SB3 x=0.075 y=0.125
+an SB4 x=0.125 y=0.075
+an SB5 x=0.375 y=-0.375
+an SB6 x=0.30 y=-0.05
+an SB7 x=0.5 y=0.0
+an SB8 x=0.575 y=0.0
+an SB9 x=0.25 y=0.30
+an SB10 x=0.425 y=0.425
+an SB11 x=0.35 y=0.225
+an SB12 x=0.4 y=0.175
+an SB13 x=0.55 y=0.375
+an SB14 x=0.45 y=0.375
+an SB15 x=0.425 y=-0.20
+an SB16 x=0.425 y=-0.30
+an SB17 x=0.575 y=-0.20
+an SB18 x=0.575 y=-0.30
 
 #Tracks
-ae track_1_to_7 S1 S7
-ae track_1_to_2 S1 S2
-ae track_1_to_12 S1 > S12
-ae track_2_to_7 S2 S7
-ae track_2_to_3 S2 > S3
-ae track_2_to_8 S2 S8
-ae track_3_to_2 S3 > S2
-ae track_3_to_4 S3 S4
-ae track_3_to_5 S3 S5
-ae track_3_to_10 S3 > S10
-ae track_4_to_8 S4 > S8
-ae track_4_to_5 S4 > S5
-ae track_4_to_12 S4 > S12
-ae track_5_to_4 S5 > S4
-ae track_5_to_6 S5 S6
-ae track_7_to_9 S7 S9
-ae track_9_to_10 S9 S10
-ae track_9_to_11 S9 S11
-ae track_8_to_4 S8 > S4
-ae track_10_to_3 S10 > S3
-ae track_12_to_1 S12 > S1
+ae track_s1_to_sb1 S1 < SB1
+ae track_sb1_to_s12 SB1 < S12
+
+ae track_s1_to_sb2 S1 > SB2
+ae track_sb2_to_s12 SB2 > S12
+
+ae track_s1_to_sb3 S1 SB3
+ae track_s7_to_sb3 S7 SB3
+
+ae track_s1_to_sb4 S1 SB4
+ae track_s2_to_sb4 S2 SB4
+
+ae track_s4_to_sb5 S4 SB5
+ae track_s12_to_sb5 S12 SB5
+
+ae track_s2_to_sb6 S2 SB6
+ae track_s8_to_sb6 S8 SB6
+
+ae track_s4_to_sb7 S4 SB7
+ae track_s3_to_sb7 S3 SB7
+
+ae track_s3_to_sb8 S3 SB8
+ae track_s5_to_sb8 S5 SB8
+
+ae track_s7_to_sb9 S7 SB9
+ae track_s9_to_sb9 S9 SB9
+
+ae track_s9_to_sb10 S9 SB10
+ae track_s10_to_sb10 S10 SB10
+
+ae track_s2_to_sb11 S2 > SB11
+ae track_sb11_to_s3 SB11 > S3
+
+ae track_s3_to_sb12 S3 > SB12
+ae track_sb12_to_sb2 SB12 > S2
+
+ae track_s3_to_sb13 S3 > SB13
+ae track_sb13_to_s10 SB13 > S10
+
+ae track_s10_to_sb14 S10 > SB14
+ae track_sb14_to_s3 SB14 > S3
+
+ae track_s4_to_sb15 S4 > SB15
+ae track_sb15_to_s8 SB15 > S8
+
+ae track_s8_to_sb16 S8 > SB16
+ae track_sb16_to_s4 SB16 > S4
+
+ae track_s4_to_sb17 S4 > SB17
+ae track_sb17_to_s5 SB17 > S5
+
+ae track_s5_to_sb18 S5 > SB18
+ae track_sb18_to_s4 SB18 > S4
+

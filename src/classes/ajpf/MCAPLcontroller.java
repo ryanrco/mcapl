@@ -227,14 +227,14 @@ public class MCAPLcontroller  {
 			AJPFLogger.fine("ajpf.MCAPLcontroller", "entered begin");
 		}
 		
-/* 		if (replayMode()) {
+ 		if (replayMode()) {
 			try {
 				String filename = getFilename(config.getProperty("ajpf.replay.file", "/records/record.txt"));
 				record = new ChoiceRecord(filename);
 			} catch (Exception e) {
 				AJPFLogger.warning("ajpf.MCAPLcontroller", "problem opening record file: " + e.getMessage());
 			}
-		} */
+		}
 		
 		specification.checkProperties();
 		mas.begin();

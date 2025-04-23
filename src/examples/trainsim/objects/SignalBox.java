@@ -7,39 +7,24 @@ import trainsim.objects.node.SimNode;
 
 import java.io.PrintStream;
 
-public class SignallingBox implements EASSSensor {
-
-    private final SimNode node;
+public class SignalBox extends Stop {
 
     private boolean accepting;
 
-    public SignallingBox(Node node){
-        this.node = new SimNode(node);
+    public SignalBox(Node node) {
+        super(node);
         toggle();
     }
+
 
     private void toggle(){
         this.accepting = !this.accepting;
         String className = accepting ? "accepting" : "blocking";
-        node.setStyle(className);
-    }
-
-    public boolean isAccepting() {
-        return accepting;
+        this.getSimNode().setStyle(className);
     }
 
     @Override
-    public void addPercept(EASSEV3Environment env) {
-
-    }
-
-    @Override
-    public void setPrintStream(PrintStream o) {
-
-    }
-
-    @Override
-    public void close() {
-
+    public String getType() {
+        return "signal_box";
     }
 }

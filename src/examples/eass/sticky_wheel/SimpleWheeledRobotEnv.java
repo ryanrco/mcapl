@@ -93,6 +93,7 @@ public class SimpleWheeledRobotEnv extends EASSVehicleEnvironment implements MCA
 			addVehicle(r);
 			rName = r.getName();
 		}
+		System.out.println(this.getAgents());
 	}
 
 	/*

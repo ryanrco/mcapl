@@ -1,7 +1,5 @@
 package trainsim.objects;
 
-import ail.semantics.AILAgent;
-import ail.util.AILSocketServer;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -13,7 +11,7 @@ import org.graphstream.ui.swing_viewer.DefaultView;
 import org.graphstream.ui.swing_viewer.SwingViewer;
 
 import org.graphstream.ui.view.Viewer;
-import trainsim.TrainSim;
+import sun.misc.Signal;
 import trainsim.config.RailwayConfig;
 
 import javax.swing.*;
@@ -21,22 +19,24 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-public class Railway extends JPanel implements Runnable{
+public class Railway extends JPanel implements Runnable {
 
-    protected Graph network;
+    public Graph network;
     private final RailwayConfig config;
 
-    private List<Train> trains;
-    private List<Station> stations;
-    private List<Track> tracks;
+    public List<Stop> stops;
 
-    protected AILSocketServer socketServer;
+    public List<Station> stations;
+    public List<SignalBox> signallingBoxes;
+    //private List<Track> tracks;
 
 
-    public Railway(RailwayConfig config, TrainSim sim) {
+
+    public Railway(RailwayConfig config) {
         this.config = config;
-        init(sim);
+        init();
 
     }
 
@@ -47,20 +47,29 @@ public class Railway extends JPanel implements Runnable{
     }
 
 
-    private void init(TrainSim sim) {
+    private void init() {
         setBackground(Color.WHITE);
         setDoubleBuffered(true);
 
         this.network = new MultiGraph("embedded");
         network.setAttribute("ui.stylesheet", "url('" + this.getNetworkCSS() + "')");
         System.setProperty("org.graphstream.ui", "swing");
+        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
+        SwingViewer viewer = new SwingViewer(network, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+
+        DefaultView view = (DefaultView) viewer.addDefaultView(false);
+        view.setPreferredSize(new Dimension(800, 800));
+        viewer.disableAutoLayout();
+        setupGraph();
+    }
+
+    public DefaultView getView(){
         SwingViewer viewer = new SwingViewer(network, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         viewer.disableAutoLayout();
         DefaultView view = (DefaultView) viewer.addDefaultView(false);
-        view.setPreferredSize(new Dimension(400, 400));
-        sim.add(view);
+        view.setPreferredSize(new Dimension(800, 800));
+        return view;
 
-        setupGraph();
     }
 
 
@@ -72,6 +81,7 @@ public class Railway extends JPanel implements Runnable{
             fileSource.addSink(network);
             fileSource.readAll(networkFile);
         }catch (Exception e){
+            e.printStackTrace();
             throw new RuntimeException("Invalid train network provided. Please ensure a valid .dgs file has been provided.");
         }finally{
             if(fileSource != null) {
@@ -84,53 +94,66 @@ public class Railway extends JPanel implements Runnable{
 
 
     private void createComponents() {
-        this.stations = new ArrayList<>();
-        this.tracks = new ArrayList<>();
+        this.stops = new ArrayList<>();
+        //this.tracks = new ArrayList<>();
+
 
         for(int i = 0; i < network.getNodeCount(); i++){
-            createStation(network.getNode(i));
+            createStop(network.getNode(i));
         }
 
         for(int i = 0; i < network.getEdgeCount(); i++){
-            createTrack(network.getEdge(i));
+       //     createTrack(network.getEdge(i));
         }
-    }
-
-    public void createTrain(AILAgent ailAgent){
-        this.trains.add(new Train(this, ailAgent));
     }
 
     private void createTrack(Edge edge){
-        try{
-            Track track = new Track(this, edge);
-            this.tracks.add(track);
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
+//        try{
+//            Track track = new Track(this, edge);
+//            this.tracks.add(track);
+//        }catch (Exception e){
+//            System.out.println(e.getMessage());
+//        }
     }
 
-
-    private void createStation(Node node){
-        this.stations.add(new Station(node));
+    public List<Station> getStations(){
+        return stops.stream().filter(stop -> stop instanceof Station)
+                .map(stop -> (Station) stop)
+                .collect(Collectors.toList());
     }
 
-
-    public Optional<Station> getStation(Node node){
-        for(Station station: stations){
-            if(station.equals(node)){
-                return Optional.of(station);
-            }
-        }
-        return Optional.empty();
+    public List<SignalBox> getSignallingBoxes(){
+        return stops.stream().filter(stop -> stop instanceof SignalBox)
+                .map(stop -> (SignalBox) stop)
+                .collect(Collectors.toList());
     }
 
-    public Optional<Station> getStation(String ID){
-        for(Station station: stations){
-            if(station.getID().equals(ID)){
-                return Optional.of(station);
-            }
+    public Optional<Stop> getStop(String id){
+        List<Stop> matching = stops.stream()
+                .filter(stop -> stop.getID().equals(id)).collect(Collectors.toList());
+
+        if(matching.isEmpty()) return Optional.empty();
+        return Optional.of(matching.get(0));
+    }
+
+    public Optional<Stop> getStop(Node node){
+        List<Stop> matching = stops.stream()
+                .filter(stop -> stop.getSimNode().node == node).collect(Collectors.toList());
+
+        if(matching.isEmpty()) return Optional.empty();
+        return Optional.of(matching.get(0));
+    }
+
+    private void createStop(Node node){
+        String id = node.getId();
+        Stop stop;
+        if(id.contains("SB")){
+            stop = new SignalBox(node);
+        }else{
+            stop = new Station(node);
         }
-        return Optional.empty();
+        this.stops.add(stop);
+
     }
 
     public String getNetworkDGS(){

@@ -22,7 +22,7 @@
 // http://www.csc.liv.ac.uk/~lad
 //----------------------------------------------------------------------------
 
-env = ail.mas.DefaultEnvironment
+env = gwendolen.ail_tutorials.tutorial2.PickUpEnv
 mas.file = /src/examples/gwendolen/ail_tutorials/tutorial2/pickupagent.gwen
 mas.builder = gwendolen.GwendolenMASBuilder
 

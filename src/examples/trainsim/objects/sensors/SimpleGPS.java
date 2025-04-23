@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrainGPS implements Sensor {
+public class SimpleGPS implements Sensor {
 
     Predicate position;
 
@@ -60,7 +60,7 @@ public class TrainGPS implements Sensor {
 
     @Override
     public int compareTo(@NotNull Sensor o) {
-        if(o instanceof TrainGPS){
+        if(o instanceof SimpleGPS){
             return 0;
         }
         return 1;

@@ -163,7 +163,7 @@ public class WheeledRobotUI extends JPanel implements ActionListener,
 	 * @param y
 	 * @param theta
 	 */
-	public void updateGraphics(double  x, double y, double theta) {
+	public void  updateGraphics(double  x, double y, double theta) {
 		canvas.updateGraphics(x, y, theta);
 	}
 	

@@ -23,23 +23,42 @@
 //----------------------------------------------------------------------------
 
 
+EASS
+
+:abstraction: train
+
+:Initial Beliefs:
+
+current_station("S3")
+target_station("S5")
+
+:Reasoning Rules:
+
+
+:Initial Goals:
+
+setup [achieve]
+
+
+:Plans:
+
++!setup [achieve] : {B current_station(C), B target_station(T)} <-
+        set_current(C),
+        set_target(T),
+        +setup,
+        +!reach_destination [achieve];
+
++!reach_destination [achieve] : {True} <-
+        move;
+
 :name: train
 
 :Initial Beliefs:
 
 
+:Reasoning Rules:
+
+
 :Initial Goals:
 
 :Plans:
-
-+started: {True} <-
-	+!at_speed_limit[achieve];
-
-+! at_speed_limit [achieve] : {True} <-
-	accelerate,
-	*at_speed_limit,
-	.send(car2, :achieve, at_speed_limit);
-
-+at_speed_limit: {True} <-
-	maintain_speed,
-	finished;

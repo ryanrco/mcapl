@@ -1,25 +1,21 @@
 package trainsim.objects;
 
+import ail.syntax.Predicate;
 import org.graphstream.graph.Node;
+import trainsim.objects.node.SimNode;
 
-public class Station {
+import java.util.List;
 
-    protected final Node node;
+public class Station extends Stop {
 
     public Station(Node node){
-        this.node = node;
+        super(node);
     }
 
-    public String getID(){
-        return this.node.getId();
-    }
+
 
     @Override
-    public boolean equals(Object obj) {
-        if(obj instanceof Node){
-            Node node = (Node) obj;
-            return this.node == node;
-        }
-        return false;
+    public String getType() {
+        return "station";
     }
 }

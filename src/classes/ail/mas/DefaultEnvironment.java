@@ -805,6 +805,10 @@ public class DefaultEnvironment implements AILEnv {
 		mas = m;
 	}
 
+	public MAS getMas() {
+		return mas;
+	}
+
 	public static void setup_scheduler(AILEnv env, MCAPLScheduler s) {
 		env.setScheduler(s);
 		env.addPerceptListener(s);

@@ -4,7 +4,7 @@ import org.graphstream.graph.Edge;
 
 import java.util.Optional;
 
-public class Track {
+/*public class Track {
 
     private final Edge edge;
 
@@ -15,7 +15,6 @@ public class Track {
 
     public Track(Railway railway, Edge edge) throws Exception {
         this.edge = edge;
-
         Optional<Station> from = railway.getStation(edge.getNode0());
         Optional<Station> to = railway.getStation(edge.getNode1());
 
@@ -23,6 +22,7 @@ public class Track {
 
         this.from = from.get();
         this.to = to.get();
+
     }
 
     public boolean isOccupied() {
@@ -37,4 +37,4 @@ public class Track {
                 ", to=" + to.getID() +
                 '}';
     }
-}
+}*/
