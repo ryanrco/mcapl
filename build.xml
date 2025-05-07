@@ -62,6 +62,16 @@
         <include name="lib/graphstream/gs-algo-2.0.jar"/>
         <include name="lib/graphstream/gs-core-2.0.jar"/>
         <include name="lib/graphstream/gs-ui-swing-2.0.jar"/>
+
+        <include name="lib/grpc/annotations-api-6.0.53.jar"/>
+        <include name="lib/grpc/grpc-netty-shaded-1.72.0.jar"/>
+        <include name="lib/grpc/grpc-protobuf-lite-1.72.0.jar"/>
+        <include name="lib/grpc/grpc-protobuf-1.72.0.jar"/>
+        <include name="lib/grpc/grpc-stub-1.72.0.jar"/>
+        <include name="lib/grpc/grpc-api-1.72.0.jar"/>
+        <include name="lib/grpc/grpc-core-1.72.0.jar"/>
+        <include name="lib/grpc/protobuf-java-4.29.3.jar"/>
+
    </fileset>
 
 
@@ -93,7 +103,31 @@
   <target name="compile" depends="-init,-compile-main,-compile-ajpf-main,-compile-peers,-compile-classes,-compile-tests,-compile-fulltests,-compile-examples"
           description="compile all AJPF sources" >
   </target>
-	
+
+    <target name="jar" depends="compile" description="Build runnable fat JAR including all dependencies">
+        <mkdir dir="target"/>
+        <jar destfile="target/TrainSimUI.jar" basedir="bin">
+            <!-- Set the entry point -->
+            <manifest>
+                <attribute name="Main-Class" value="trainsim.TrainSim"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+
+            <!-- Include compiled classes -->
+            <fileset dir="bin"/>
+
+            <!-- Include all 3rd party jars -->
+            <zipgroupfileset dir="lib/3rdparty">
+                <include name="**/*.jar"/>
+            </zipgroupfileset>
+
+            <!-- Include GraphStream libs -->
+            <zipgroupfileset dir="lib/graphstream">
+                <include name="**/*.jar"/>
+            </zipgroupfileset>
+        </jar>
+    </target>
+
 	<target name="-compile-ajpf-main" if="have_main">
   	<mkdir dir="bin/ajpf"/>
   	<javac srcdir="src/main/ajpf" destdir="bin"
@@ -283,7 +317,7 @@
         </batchtest>
 
     </junit>
-   
+
   </target>
   
 	   <target name="prolog" depends="compile"

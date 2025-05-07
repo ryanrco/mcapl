@@ -2,89 +2,88 @@ DGS004
 rail_network 0 0
 
 #Stations
-an S1 x=0 y=0 label:S1
-an S2 x=0.25 y=0.15 label:S2
-an S3 x=0.5 y=0.25 label:S3
-an S4 x=0.5 y=-0.25 label:S4
-an S5 x=0.65 y=-0.25 label:S5
-an S7 x=0.15 y=0.25 label:S7
-an S8 x=0.35 y=-0.25 label:S8
-an S9 x=0.35 y=0.35 label:S9
-an S10 x=0.50 y=0.50 label:S10
-an S12 x=0.25 y=-0.5 label:S12
+an ST1 x=0 y=0 label:ST1 type="station"
+an ST2 x=0.25 y=0.15 label:ST2 type="station"
+an ST3 x=0.5 y=0.25 label:ST3 type="station"
+an ST4 x=0.5 y=-0.25 label:ST4 type="station"
+an ST5 x=0.65 y=-0.25 label:ST5 type="station"
+an ST7 x=0.15 y=0.25 label:ST7 type="station"
+an ST8 x=0.35 y=-0.25 label:ST8 type="station"
+an ST9 x=0.35 y=0.35 label:ST9 type="station"
+an ST10 x=0.50 y=0.50 label:ST10 type="station"
+an ST12 x=0.25 y=-0.5 label:ST12 type="station"
 
 #Signalling Box
-an SB1 x=0.152 y=-0.237
-an SB2 x=0.098 y=-0.263
-an SB3 x=0.075 y=0.125
-an SB4 x=0.125 y=0.075
-an SB5 x=0.375 y=-0.375
-an SB6 x=0.30 y=-0.05
-an SB7 x=0.5 y=0.0
-an SB8 x=0.575 y=0.0
-an SB9 x=0.25 y=0.30
-an SB10 x=0.425 y=0.425
-an SB11 x=0.35 y=0.225
-an SB12 x=0.4 y=0.175
-an SB13 x=0.55 y=0.375
-an SB14 x=0.45 y=0.375
-an SB15 x=0.425 y=-0.20
-an SB16 x=0.425 y=-0.30
-an SB17 x=0.575 y=-0.20
-an SB18 x=0.575 y=-0.30
+an SJ1 x=0.152 y=-0.237 type="signalling_junction"
+an SJ2 x=0.098 y=-0.263 type="signalling_junction"
+an SJ3 x=0.075 y=0.125 type="signalling_junction"
+an SJ4 x=0.125 y=0.075 type="signalling_junction"
+an SJ5 x=0.375 y=-0.375 type="signalling_junction"
+an SJ6 x=0.30 y=-0.05 type="signalling_junction"
+an SJ7 x=0.5 y=0.0 type="signalling_junction"
+an SJ8 x=0.575 y=0.0 type="signalling_junction"
+an SJ9 x=0.25 y=0.30 type="signalling_junction"
+an SJ10 x=0.425 y=0.425 type="signalling_junction"
+an SJ11 x=0.35 y=0.225 type="signalling_junction"
+an SJ12 x=0.4 y=0.175 type="signalling_junction"
+an SJ13 x=0.55 y=0.375 type="signalling_junction"
+an SJ14 x=0.45 y=0.375 type="signalling_junction"
+an SJ15 x=0.425 y=-0.20 type="signalling_junction"
+an SJ16 x=0.425 y=-0.30 type="signalling_junction"
+an SJ17 x=0.575 y=-0.20 type="signalling_junction"
+an SJ18 x=0.575 y=-0.30 type="signalling_junction"
 
 #Tracks
-ae track_s1_to_sb1 S1 < SB1
-ae track_sb1_to_s12 SB1 < S12
+ae track_s1_to_sb1 ST1 < SJ1
+ae track_sb1_to_s12 SJ1 < ST12
 
-ae track_s1_to_sb2 S1 > SB2
-ae track_sb2_to_s12 SB2 > S12
+ae track_s1_to_sb2 ST1 > SJ2
+ae track_sb2_to_s12 SJ2 > ST12
 
-ae track_s1_to_sb3 S1 SB3
-ae track_s7_to_sb3 S7 SB3
+ae track_s1_to_sb3 ST1 SJ3
+ae track_s7_to_sb3 ST7 SJ3
 
-ae track_s1_to_sb4 S1 SB4
-ae track_s2_to_sb4 S2 SB4
+ae track_s1_to_sb4 ST1 SJ4
+ae track_s2_to_sb4 ST2 SJ4
 
-ae track_s4_to_sb5 S4 SB5
-ae track_s12_to_sb5 S12 SB5
+ae track_s4_to_sb5 ST4 SJ5
+ae track_s12_to_sb5 ST12 SJ5
 
-ae track_s2_to_sb6 S2 SB6
-ae track_s8_to_sb6 S8 SB6
+ae track_s2_to_sb6 ST2 SJ6
+ae track_s8_to_sb6 ST8 SJ6
 
-ae track_s4_to_sb7 S4 SB7
-ae track_s3_to_sb7 S3 SB7
+ae track_s4_to_sb7 ST4 SJ7
+ae track_s3_to_sb7 ST3 SJ7
 
-ae track_s3_to_sb8 S3 SB8
-ae track_s5_to_sb8 S5 SB8
+ae track_s3_to_sb8 ST3 SJ8
+ae track_s5_to_sb8 ST5 SJ8
 
-ae track_s7_to_sb9 S7 SB9
-ae track_s9_to_sb9 S9 SB9
+ae track_s7_to_sb9 ST7 SJ9
+ae track_s9_to_sb9 ST9 SJ9
 
-ae track_s9_to_sb10 S9 SB10
-ae track_s10_to_sb10 S10 SB10
+ae track_s9_to_sb10 ST9 SJ10
+ae track_s10_to_sb10 ST10 SJ10
 
-ae track_s2_to_sb11 S2 > SB11
-ae track_sb11_to_s3 SB11 > S3
+ae track_s2_to_sb11 ST2 > SJ11
+ae track_sb11_to_s3 SJ11 > ST3
 
-ae track_s3_to_sb12 S3 > SB12
-ae track_sb12_to_sb2 SB12 > S2
+ae track_s3_to_sb12 ST3 > SJ12
+ae track_sb12_to_sb2 SJ12 > ST2
 
-ae track_s3_to_sb13 S3 > SB13
-ae track_sb13_to_s10 SB13 > S10
+ae track_s3_to_sb13 ST3 > SJ13
+ae track_sb13_to_s10 SJ13 > ST10
 
-ae track_s10_to_sb14 S10 > SB14
-ae track_sb14_to_s3 SB14 > S3
+ae track_s10_to_sb14 ST10 > SJ14
+ae track_sb14_to_s3 SJ14 > ST3
 
-ae track_s4_to_sb15 S4 > SB15
-ae track_sb15_to_s8 SB15 > S8
+ae track_s4_to_sb15 ST4 > SJ15
+ae track_sb15_to_s8 SJ15 > ST8
 
-ae track_s8_to_sb16 S8 > SB16
-ae track_sb16_to_s4 SB16 > S4
+ae track_s8_to_sb16 ST8 > SJ16
+ae track_sb16_to_s4 SJ16 > ST4
 
-ae track_s4_to_sb17 S4 > SB17
-ae track_sb17_to_s5 SB17 > S5
+ae track_s4_to_sb17 ST4 > SJ17
+ae track_sb17_to_s5 SJ17 > ST5
 
-ae track_s5_to_sb18 S5 > SB18
-ae track_sb18_to_s4 SB18 > S4
-
+ae track_s5_to_sb18 ST5 > SJ18
+ae track_sb18_to_s4 SJ18 > ST4

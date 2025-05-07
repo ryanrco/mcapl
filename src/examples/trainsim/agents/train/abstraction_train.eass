@@ -1,0 +1,94 @@
+// ----------------------------------------------------------------------------
+// Copyright (C) 2013 Louise A. Dennis, Michael Fisher
+//
+// This file is part of the Engineering Autonomous Space Software (EASS) Library.
+//
+// The EASS Library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 3 of the License, or (at your option) any later version.
+//
+// The EASS Library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with the EASS Library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+//
+// To contact the authors:
+// http://www.csc.liv.ac.uk/~lad
+//
+//----------------------------------------------------------------------------
+
+
+:abstraction: train
+
+:Initial Beliefs:
+
+station_approaching_distance(50.0)
+junction_approaching_distance(100.0)
+
+:Reasoning Rules:
+
+
+:Initial Goals:
+
+:Plans:
++.received(:tell, B): {True} <- +B;
++.received(:perform, G): {True} <- +!G [perform];
++.received(:achieve, G): {True} <- +!G [achieve];
+
+
+ +!should_start_braking(BD) [perform]: {B moving, B next_station_in(D), D < BD} <-
+    +!brake [perform];
+
++!check_approaching_station(D) [perform] : {B station_approaching_distance(AD), D < AD} <-
+    assert_shared(approaching_station);
+
++!check_approaching_junction(D) [perform] : {~B approaching_junction, B junction_approaching_distance(AD), D < AD} <-
+    assert_shared(approaching_junction);
+
++ distance_from(_, T, D) : {B next_station(T)} <-
+    +.lock,
+    -next_stop_in,
+    +next_stop_in(D),
+    +!check_approaching_station(D) [perform],
+    -.lock;
+
++ distance_from(_, SJ, D) : {B next_junction(SJ)} <-
+    +.lock,
+    -next_stop_in,
+    +next_junction_in(D),
+    +!check_approaching_junction(D) [perform],
+    -.lock;
+
+
++gps(_,_,S): {B accelerate, B next_stop_in(D)} <-
+    calc_braking_distance(D, BD),
+    +!should_start_braking(BD) [perform];
+
++!should_start_braking(T) [perform] : {True} <-
+    +test;
+
++!check_approaching_station(D) [perform] : {True} <-
+    +test;
+
++!check_approaching_junction(D) [perform] : {True} <-
+    +test;
+
++ !accelerate [perform] : {~B accelerate} <-
+    +.lock,
+    accelerate,
+    assert_shared(accelerate),
+    remove_shared(braking),
+    -.lock;
+
++ !brake [perform] : {~B braking} <-
+    +.lock,
+    brake,
+    assert_shared(braking),
+    remove_shared(accelerate),
+    -.lock;
+

@@ -13,12 +13,12 @@ public class SimpleGPS implements Sensor {
 
     Predicate position;
 
-    static final String logname = "trainsim.objects.sensors.TrainGPS";
+    public final static String GPS_FUNCTOR = "gps";
+    static final String logname = "trainsim.objects.sensors.SimpleGPS";
 
     @Override
     public List<Predicate> getPercepts() {
         ArrayList<Predicate> percepts = new ArrayList<Predicate>();
-        // The sensor returns (X, Y) coordinates
         if (position != null) {
             percepts.add(position);
         }
@@ -27,7 +27,7 @@ public class SimpleGPS implements Sensor {
 
     @Override
     public void addPercept(Predicate l) {
-        if(l.getFunctor().equals("position")){
+        if(l.getFunctor().equals("gps")){
             position = l;
         }
     }
@@ -41,20 +41,17 @@ public class SimpleGPS implements Sensor {
         AJPFLogger.warning(logname, "SimpleGPS does not remove predicates");
     }
 
-    /**
-     * Return the x coordinate.
-     * @return
-     */
     public double getX() {
         return ((NumberTerm) position.getTerm(0)).solve();
     }
 
-    /**
-     * Return the y coordinate.
-     * @return
-     */
     public double getY() {
         return ((NumberTerm) position.getTerm(1)).solve();
+    }
+
+
+    public double getSpeed() {
+        return ((NumberTerm) position.getTerm(2)).solve();
     }
 
 

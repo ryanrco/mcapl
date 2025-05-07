@@ -29,6 +29,7 @@ import ajpf.util.VerifyMap;
 import ail.mas.DefaultEnvironment;
 import ail.syntax.Predicate;
 import ail.syntax.Message;
+import eass.mas.DefaultEASSEnvironment;
 
 /**
  * An environment which contains a number of agent controlled vehicles.  I'm not sure if this really wants to extend Default Environment, 
@@ -36,11 +37,11 @@ import ail.syntax.Message;
  * @author louiseadennis
  *
  */
-public class VehicleEnvironment extends DefaultEnvironment implements VehicleEnv {
+public class VehicleEnvironment extends DefaultEASSEnvironment implements VehicleEnv {
 	/**
 	 * The vehicles in the environment, indexed by their names.
 	 */
-	VerifyMap<String, VehicleInterface> vehicles = new VerifyMap<String, VehicleInterface>();
+    protected VerifyMap<String, VehicleInterface> vehicles = new VerifyMap<String, VehicleInterface>();
 	
 	/**
 	 * Add a vehicle to the environment.
@@ -49,7 +50,10 @@ public class VehicleEnvironment extends DefaultEnvironment implements VehicleEnv
 	public void addVehicle(VehicleInterface v) {
 		v.setEnv(this);
 		vehicles.put(v.getName(), v);
+
+
 	}
+
 	
 	public VehicleInterface getVehicle(String name) {
 		return vehicles.get(name);
@@ -94,6 +98,7 @@ public class VehicleEnvironment extends DefaultEnvironment implements VehicleEnv
 		super.addPercept(agName, per);
 			
 		notifyListeners(agName);
+
 	}
 	
 	/*

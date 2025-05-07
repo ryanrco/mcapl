@@ -1,6 +1,48 @@
 env = trainsim.RailwayEnvironment
-mas.file = /src/examples/trainsim/agents/train.eass
-mas.builder = eass.EASSMASBuilder
 
-log.fine = eass.mas.DefaultEnvironment,trainsim.RailwayEnvironment
-ajpf.transition every reasoning cycle = false
+
+mas.agent.1.file = src/examples/trainsim/agents/command/command_center.eass
+mas.agent.1.builder = eass.EASSAgentBuilder
+mas.agent.1.name = command_center
+
+mas.agent.2.file = src/examples/trainsim/agents/command/abstract_command_center.eass
+mas.agent.2.builder = eass.EASSAgentBuilder
+mas.agent.2.name = abstraction_command_center
+
+mas.agent.3.file = src/examples/trainsim/agents/train/train.eass
+mas.agent.3.builder = eass.EASSAgentBuilder
+mas.agent.3.name = train0
+
+mas.agent.4.file = src/examples/trainsim/agents/train/abstraction_train.eass
+mas.agent.4.builder = eass.EASSAgentBuilder
+mas.agent.4.name = abstraction_train0
+
+
+mas.agent.5.file = src/examples/trainsim/agents/train/train.eass
+mas.agent.5.builder = eass.EASSAgentBuilder
+mas.agent.5.name = train1
+
+mas.agent.6.file = src/examples/trainsim/agents/train/abstraction_train.eass
+mas.agent.6.builder = eass.EASSAgentBuilder
+mas.agent.6.name = abstraction_train1
+
+mas.agent.7.file = src/examples/trainsim/agents/train/train.eass
+mas.agent.7.builder = eass.EASSAgentBuilder
+mas.agent.7.name = train2
+
+mas.agent.8.file = src/examples/trainsim/agents/train/abstraction_train.eass
+mas.agent.8.builder = eass.EASSAgentBuilder
+mas.agent.8.name = abstraction_train2
+
+mas.agent.9.file = src/examples/trainsim/agents/train/train.eass
+mas.agent.9.builder = eass.EASSAgentBuilder
+mas.agent.9.name = train3
+
+mas.agent.10.file = src/examples/trainsim/agents/train/abstraction_train.eass
+mas.agent.10.builder = eass.EASSAgentBuilder
+mas.agent.10.name = abstraction_train3
+
+
+
+log.warning = ajpf.MCAPLAgent,ajpf.MCAPLcontroller
+

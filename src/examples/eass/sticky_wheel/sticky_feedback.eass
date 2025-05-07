@@ -39,7 +39,7 @@ bound(1)
 +.received(:perform, G): {True} <- +!G [perform];
 +.received(:achieve, G): {True} <- +!G [achieve];
 
-+position(X, Y, Theta): {B pos(X1, Y1, Theta1), B target(X2, Y2)} <- 
++position(X, Y, Theta): {B pos(X1, Y1, Theta1), B target(X2, Y2)} <-
 	     +.lock,
 	     -position(X1, Y1, Theta1),
  	     -pos(X1, Y1, Theta1),

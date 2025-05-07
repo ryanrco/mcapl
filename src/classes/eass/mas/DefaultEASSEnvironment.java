@@ -184,6 +184,7 @@ public class DefaultEASSEnvironment extends DefaultEnvironment implements EASSEn
 		Unifier u = new Unifier();
 		boolean printed = false;
 
+
 	   if (act.getFunctor().equals("assert_shared")) {
 		   addSharedBelief(agName, new Literal(true, new PredicatewAnnotation((Predicate) act.getTerm(0))));
 		   printed = true;

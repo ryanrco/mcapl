@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="grpc-protobuf-lite-1.72.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/grpc/grpc-protobuf-lite-1.72.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

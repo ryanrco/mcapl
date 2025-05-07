@@ -16,7 +16,9 @@ public class SimNode {
 
 
     public void setStyle(String style){
+        System.out.println("Style: " + style);
         node.setAttribute("ui.class", style);
+
     }
 
 

@@ -1,0 +1,54 @@
+:name: train
+
+:Initial Beliefs:
+
+in_station
+
+:Reasoning Rules:
+
+:Initial Goals:
+
+complete_journey[achieve]
+
+:Plans:
+
++! complete_journey[achieve]: {B in_station, B current_station(S), B target_station(S)} <-
+    print("Arrived"), +journey_completed;
+
++! complete_journey[achieve] : {B in_station, ~B current_station(S), ~B target_station(ST)} <-
+    request_route_update, *route_updated, +route_planned, request_departure_clearance, *departure_cleared,
+     +!depart_station[achieve];
+
++! complete_journey[achieve]: {B in_station, B current_station(S), ~B target_station(S)} <-
+    +!depart_station[achieve];
+
++! complete_journey [achieve] : {~B in_station} <-
+    +!navigate_to_next_station[achieve];
+
++! depart_station[achieve]: {B in_station, B departure_cleared} <-
+    -in_station, perf(accelerate), *accelerate, +!navigate_to_next_station[achieve];
+
++! depart_station[achieve] : {B in_station, ~B departure_cleared} <-
+    +.lock, print(here123), request_departure_clearance, -.lock, *departure_cleared;
+
++! arrive_at_station[achieve] : {B approaching_station} <-
+    +.lock, perf(start_braking), -.lock, print(done);
+
++! navigate_to_next_station[achieve]: {B approaching_junction} <-
+    +!navigate_junction[achieve];
+
++! navigate_to_next_station[achieve]: {B accelerate} <-
+    +!navigate_junction[achieve];
+
++! navigate_junction[achieve]: {B next_junction(SJ), B approaching_junction, ~B signal_clear} <-
+    +.lock, perf(brake), signal_check(SJ), -.lock, *signal_clear, perf(accelerate), *accelerate;
+
++! navigate_junction[achieve]: {B approaching_junction, B signal_clear} <-
+    +banana, progress_route, *test;
+
+
++! navigate_junction[achieve] : {~B approaching_junction, ~B signal_clear} <-
+    +banana;
+
+
+

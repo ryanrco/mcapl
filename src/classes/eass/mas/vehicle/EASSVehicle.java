@@ -97,6 +97,7 @@ public class EASSVehicle implements VehicleInterface, EASSEnv {
 			 
 		   if (act.getFunctor().equals("assert_shared")) {
 			   addSharedBelief(agName, new Literal(true, new PredicatewAnnotation((Predicate) act.getTerm(0))));
+
 			   printed = true;
 			   if (AJPFLogger.ltFine(logname)) {
 				   AJPFLogger.fine(logname, agName + " done " + act);
@@ -346,7 +347,6 @@ public class EASSVehicle implements VehicleInterface, EASSEnv {
 		for (Sensor s: sensors) {
 			s.addPercept(l);
 		}
-
 		env.notifyListeners(abstraction.getAgName());
 	}
 

@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="annotations-api-6.0.53">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/grpc/annotations-api-6.0.53.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/grpc/grpc-netty-shaded-1.72.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/grpc/grpc-protobuf-1.72.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/grpc/grpc-stub-1.72.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

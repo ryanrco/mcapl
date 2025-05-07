@@ -35,6 +35,7 @@ import ail.syntax.NumberTerm;
 import ail.util.AILexception;
 import ajpf.MCAPLJobber;
 
+
 /**
  * SimpleWheeledRobot Env is an environment for a simple wheeled robot.  This is using the EASS classes for
  * Vehicles, so the environment contains vehicles which in turn act as environments for sets of agents which control that
@@ -69,7 +70,7 @@ public class SimpleWheeledRobotEnv extends EASSVehicleEnvironment implements MCA
 		s.addJobber(this);
 		addPerceptListener(s);
 	}
-	
+
 
 	/*
 	 * (non-Javadoc)
@@ -78,7 +79,7 @@ public class SimpleWheeledRobotEnv extends EASSVehicleEnvironment implements MCA
 	public void addAgent(AILAgent a) {
 		// NB. We are implicitly assuming that abstraction engines will be added before reasoning engines.
 		EASSAgent eass = (EASSAgent) a;
-		
+
 		// If the agent is an reasoning engine, connect it to its Vehicle.
 		if (contains(eass.getReasoningName())) {
 			this.addAgentToVehicle(eass);
@@ -95,6 +96,7 @@ public class SimpleWheeledRobotEnv extends EASSVehicleEnvironment implements MCA
 		}
 		System.out.println(this.getAgents());
 	}
+
 
 	/*
 	 * (non-Javadoc)

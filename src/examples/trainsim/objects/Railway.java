@@ -1,5 +1,6 @@
 package trainsim.objects;
 
+import io.grpc.netty.shaded.io.netty.util.Signal;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -11,7 +12,6 @@ import org.graphstream.ui.swing_viewer.DefaultView;
 import org.graphstream.ui.swing_viewer.SwingViewer;
 
 import org.graphstream.ui.view.Viewer;
-import sun.misc.Signal;
 import trainsim.config.RailwayConfig;
 
 import javax.swing.*;
@@ -19,7 +19,12 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import static trainsim.TrainSim.simLogger;
 
 public class Railway extends JPanel implements Runnable {
 
@@ -27,12 +32,7 @@ public class Railway extends JPanel implements Runnable {
     private final RailwayConfig config;
 
     public List<Stop> stops;
-
-    public List<Station> stations;
-    public List<SignalBox> signallingBoxes;
-    //private List<Track> tracks;
-
-
+    public List<Track> tracks;
 
     public Railway(RailwayConfig config) {
         this.config = config;
@@ -40,12 +40,10 @@ public class Railway extends JPanel implements Runnable {
 
     }
 
-
     @Override
     public void run() {
 
     }
-
 
     private void init() {
         setBackground(Color.WHITE);
@@ -57,13 +55,11 @@ public class Railway extends JPanel implements Runnable {
         System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
         SwingViewer viewer = new SwingViewer(network, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
 
-        DefaultView view = (DefaultView) viewer.addDefaultView(false);
-        view.setPreferredSize(new Dimension(800, 800));
         viewer.disableAutoLayout();
         setupGraph();
     }
 
-    public DefaultView getView(){
+    public DefaultView getView() {
         SwingViewer viewer = new SwingViewer(network, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         viewer.disableAutoLayout();
         DefaultView view = (DefaultView) viewer.addDefaultView(false);
@@ -73,18 +69,19 @@ public class Railway extends JPanel implements Runnable {
     }
 
 
-    private void setupGraph(){
+    private void setupGraph() {
         String networkFile = getNetworkDGS();
         FileSource fileSource = null;
-        try{
+        try {
             fileSource = FileSourceFactory.sourceFor(networkFile);
             fileSource.addSink(network);
             fileSource.readAll(networkFile);
-        }catch (Exception e){
-            e.printStackTrace();
-            throw new RuntimeException("Invalid train network provided. Please ensure a valid .dgs file has been provided.");
-        }finally{
-            if(fileSource != null) {
+        } catch (Exception e) {
+            simLogger.log(Level.SEVERE, "Invalid rail graph has been provided. Exiting.");
+            System.exit(1);
+
+        } finally {
+            if (fileSource != null) {
                 fileSource.removeSink(network);
                 createComponents();
             }
@@ -92,78 +89,158 @@ public class Railway extends JPanel implements Runnable {
     }
 
 
-
-    private void createComponents() {
+    private void createComponents()  {
         this.stops = new ArrayList<>();
-        //this.tracks = new ArrayList<>();
-
-
-        for(int i = 0; i < network.getNodeCount(); i++){
-            createStop(network.getNode(i));
+        this.tracks = new ArrayList<>();
+        for (int i = 0; i < network.getNodeCount(); i++) {
+            Node node = network.getNode(i);
+            try {
+                createStop(node);
+            }catch (Exception e){
+                simLogger.log(Level.SEVERE, e.getMessage() +
+                        "\n This could cause unforeseen behaviour in the network.");
+            }
         }
+        for (int i = 0; i < network.getEdgeCount(); i++) {
+            Edge edge = network.getEdge(i);
+            try {
+                createTrack(edge);
+            }catch (Exception e){
+                e.printStackTrace();
+                simLogger.log(Level.SEVERE, e.getMessage() +
+                        "\n This could cause unforeseen behaviour in the network.");
+            }
 
-        for(int i = 0; i < network.getEdgeCount(); i++){
-       //     createTrack(network.getEdge(i));
         }
     }
 
-    private void createTrack(Edge edge){
-//        try{
-//            Track track = new Track(this, edge);
-//            this.tracks.add(track);
-//        }catch (Exception e){
-//            System.out.println(e.getMessage());
-//        }
+    public Stop createStop(Node node) throws Exception {
+        String type = ((String) node.getAttribute("type"));
+        Stop createdStop = null;
+        switch (type) {
+            case "station":
+                createdStop = new Station(node);
+                break;
+            case "signalling_junction":
+                createdStop = new SignalBox(node);
+                break;
+            default:
+                break;
+        }
+        if (createdStop == null) {
+            throw new Exception("Attempted to create an invalid stop at ID " + node.getId());
+        }
+        this.stops.add(createdStop);
+        return createdStop;
     }
 
-    public List<Station> getStations(){
-        return stops.stream().filter(stop -> stop instanceof Station)
-                .map(stop -> (Station) stop)
-                .collect(Collectors.toList());
+    public Track createTrack(Edge edge) throws Exception{
+        Track track = new Track(this, edge);
+        this.tracks.add(track);
+        return track;
     }
 
-    public List<SignalBox> getSignallingBoxes(){
-        return stops.stream().filter(stop -> stop instanceof SignalBox)
-                .map(stop -> (SignalBox) stop)
-                .collect(Collectors.toList());
-    }
 
-    public Optional<Stop> getStop(String id){
+
+
+
+    public Optional<Stop> getStop(String id) {
         List<Stop> matching = stops.stream()
                 .filter(stop -> stop.getID().equals(id)).collect(Collectors.toList());
 
-        if(matching.isEmpty()) return Optional.empty();
+        if (matching.isEmpty()) return Optional.empty();
         return Optional.of(matching.get(0));
     }
 
-    public Optional<Stop> getStop(Node node){
+    public Optional<Stop> getStop(Node node) {
         List<Stop> matching = stops.stream()
                 .filter(stop -> stop.getSimNode().node == node).collect(Collectors.toList());
 
-        if(matching.isEmpty()) return Optional.empty();
+        if (matching.isEmpty()) return Optional.empty();
         return Optional.of(matching.get(0));
     }
 
-    private void createStop(Node node){
-        String id = node.getId();
-        Stop stop;
-        if(id.contains("SB")){
-            stop = new SignalBox(node);
-        }else{
-            stop = new Station(node);
-        }
-        this.stops.add(stop);
 
+    public Optional<Station> getStation(String id) {
+        return stops.stream()
+                .filter(stop -> stop instanceof Station && stop.getID().equals(id))
+                .map(stop -> (Station) stop)
+                .findFirst();
     }
 
-    public String getNetworkDGS(){
+    public Optional<Station> getStation(Node node) {
+        return stops.stream()
+                .filter(stop -> stop instanceof Station && stop.getSimNode().node == node)
+                .map(stop -> (Station) stop)
+                .findFirst();
+    }
+
+    public Optional<SignalBox> getSignalBox(String id) {
+        return stops.stream()
+                .filter(stop -> stop instanceof SignalBox && stop.getID().equals(id))
+                .map(stop -> (SignalBox) stop)
+                .findFirst();
+    }
+
+    public Optional<SignalBox> getSignalBox(Node node) {
+        return stops.stream()
+                .filter(stop -> stop instanceof SignalBox && stop.getSimNode().node == node)
+                .map(stop -> (SignalBox) stop)
+                .findFirst();
+    }
+
+
+    public Optional<Station> getRandomStation() {
+        List<Station> stationList = new ArrayList<>();
+        for (Stop stop : stops) {
+            if (stop instanceof Station) {
+                stationList.add((Station) stop);
+            }
+        }
+
+        if (stationList.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Random rand = new Random();
+        return Optional.of(stationList.get(rand.nextInt(stationList.size())));
+    }
+
+
+    public Optional<Track> getTrack(String id) {
+        List<Track> matching = tracks.stream()
+                .filter(stop -> stop.getEdge().getId().equals(id)).collect(Collectors.toList());
+
+        if (matching.isEmpty()) return Optional.empty();
+        return Optional.of(matching.get(0));
+    }
+
+    public Optional<Track> getTrack(Edge edge) {
+        List<Track> matching = tracks.stream()
+                .filter(track -> track.getEdge() == edge).collect(Collectors.toList());
+
+        if (matching.isEmpty()) return Optional.empty();
+        return Optional.of(matching.get(0));
+    }
+
+    public Optional<Track> getTrackBetween(Node from, Node to){
+        Edge edge = from.getEdgeBetween(to);
+        if(edge != null){
+            return getTrack(edge);
+        }
+        return Optional.empty();
+    }
+
+
+
+
+    public String getNetworkDGS() {
         return config.getProperty("train_network");
     }
 
-    public String getNetworkCSS(){
+    public String getNetworkCSS() {
         return config.getProperty("train_network_style");
     }
-
 
     public void configure() {
 

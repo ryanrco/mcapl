@@ -1,0 +1,3 @@
+train_network = src/tests/trainsim/configs/test_network.dgs
+train_network_style = src/examples/trainsim/config/railways/train_sim.css
+network_host = localhost:5506

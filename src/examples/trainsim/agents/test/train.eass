@@ -1,0 +1,71 @@
+:name: train
+
+:Initial Beliefs:
+
+in_station
+route_planned
+signals_clear
+next_junction
+next_station
+
+:Initial Goals:
+
+complete_journey [achieve]
+
+:Plans:
+
+//Manages the journey of trains
+
+//When a train has successfully completed its journey, and is in the target station.
++! complete_journey [achieve] : {B in_station, B current_station(S), B target_station(S)} <-
+    +.lock, +journey_completed, -.lock;
+
+//When a train is in a station, but it's not its final calling point.
++! complete_journey [achieve] : {B in_station, B current_station(S), ~B target_station(S)} <-
+    +.lock, +waiting_for_departure, -.lock, *departure_cleared, +!depart_station[achieve],
+    +! navigate_to_next_station[achieve];
+
++! complete_journey [achieve] : {~B in_station} <-
+    +!navigate_to_next_station[achieve];
+
+
+// Manages departures and arrivals
+
++! depart_station [achieve] : {B departure_cleared, B in_station} <-
+    +.lock, -in_station, perf(start_moving), -.lock, *moving;
+
++! depart_station [achieve] : {B in_station} <-
+    +.lock, request_departure_clearance, -.lock, *departure_cleared;
+
++! arrive_at_station [achieve] : {B approaching_station} <-
+    +.lock, perf(start_braking), -.lock, *braking, +!stop_at_station[achieve];
+
++! stop_at_station [achieve] : {B braking} <-
+    +.lock, perf(stop_train), -braking, +stopped, -.lock, *stopped, update_current_station, +!complete_journey[achieve];
+
+// Route navigation
+
++! navigate_to_next_station [achieve] : {B signals_clear, B route_planned, B next_junction(J), ~B junction_passed(J)} <-
+    +.lock, +approaching_junction, -.lock, +!navigate_junction[achieve];
+
++! navigate_to_next_station [achieve] : {B signals_clear, B route_planned, B next_station(S), ~B approaching_station} <-
+    +.lock, +approaching_station, -.lock, +!monitor_station_approach[achieve];
+
++! navigate_to_next_station [achieve] : {B signals_clear, B route_planned, ~B next_junction(J), ~B next_station(S)} <-
+    +.lock, request_route_update, -.lock, *route_updated;
+
++! navigate_to_next_station [achieve] : {~B signals_clear} <-
+    +.lock, perf(reduce_speed), -.lock, *reduced_speed, *signals_clear;
+
+//Navigating junctions
+
++! navigate_junction [achieve] : {B approaching_junction, B junction_cleared, B next_junction(J)} <-
+    +.lock, perf(navigate_junction), +junction_passed(J), -approaching_junction, update_next_junction, -.lock,
+    +! navigate_to_next_station[achieve];
+
++! navigate_junction [achieve] : {B approaching_junction, ~B junction_cleared} <-
+    +.lock, request_junction_clearance, -.lock, *junction_cleared;
+
+//Speed management
+
++! monitor_station_approach [achieve] : {B approaching_station, B station

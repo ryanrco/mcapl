@@ -108,7 +108,7 @@ public class Is extends AILComparison {
 	}
 	
 	/**
-	 * Return the RHS of this is equivalence.ß
+	 * Return the RHS of this is equivalence.
 	 * @return
 	 */
 	public Term getRHS() {

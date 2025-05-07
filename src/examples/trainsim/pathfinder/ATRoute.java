@@ -1,95 +1,189 @@
 package trainsim.pathfinder;
 
-import org.graphstream.algorithm.Dijkstra;
-import org.graphstream.graph.Node;
-import org.graphstream.graph.Path;
-import trainsim.objects.Stop;
-import trainsim.objects.node.SimNode;
+import ail.syntax.Literal;
+import ail.syntax.Predicate;
+import ail.syntax.StringTermImpl;
 
-import java.util.Collection;
+import trainsim.objects.*;
+
+
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import static trainsim.TrainSimUI.railway;
+import static trainsim.TrainSim.railway;
+
 
 public class ATRoute {
 
-    public SimNode source;
-    public SimNode target;
+    private final AutonomousTrain train;
 
-    private Collection<Node> shortest;
+    private Stop currentStation;
+    private Station nextStation;
+    private Station targetStation;
+    private SignalBox nextJunction;
+
+    private List<Stop> shortest;
+    private List<Track> tracks;
+
+    private Track currentTrack;
+
     private int reroutes = 0;
 
 
-    public ATRoute(SimNode source, SimNode target){
-        this.source = source;
-        this.target = target;
-        if(source == null || target == null){
-            return;
+    public ATRoute(AutonomousTrain train, Station from, Station to) {
+        this.train = train;
+        setCurrentStation(from);
+        setTargetStation(to);
+        generateShortest();
+    }
+
+    private void generateShortest(){
+        RouteBuilder routeBuilder = new RouteBuilder(this.currentStation, this.targetStation);
+        try{
+            shortest = routeBuilder.getStops();
+            tracks = routeBuilder.getTracks();
+            setupRoute();
+        }catch (Exception e){
+            e.printStackTrace();
+        };
+    }
+
+    public void progressRoute(){
+        Optional<Track> currentTrack = getCurrentTrack();
+        currentTrack.ifPresent(track -> {
+            track.setCongested(false);
+            track.toggleSignalBoxes();
+        });
+
+        Optional<Stop> optNext = getNextPath();
+        optNext.ifPresent(stop -> {
+            this.setCurrentStation(stop);
+            this.shortest.remove(stop);
+        });
+
+        setupRoute();
+        this.train.node.progressedRoute = true;
+    }
+
+    private void setupRoute(){
+        Optional<SignalBox> signalBox = shortest.stream().filter(stop -> stop instanceof SignalBox)
+                .map(stop -> (SignalBox) stop).findFirst();
+
+        signalBox.ifPresent(this::setNextJunction);
+
+        Optional<Station> nextStation = shortest.stream().filter(station -> station instanceof Station)
+                .map(station -> (Station) station).findFirst();
+
+
+
+        nextStation.ifPresent(this::setNextStation);
+        Optional<Track> currentTrack = getCurrentTrack();
+        currentTrack.ifPresent(track -> track.setCongested(true));
+
+    }
+
+    public Optional<Stop> getNextPath(){
+        try {
+            return Optional.of(shortest.stream().findFirst().get());
+        }catch (Exception ignored){};
+        return Optional.empty();
+    }
+
+
+
+    private void setCurrentStation(Stop stop){
+        this.currentStation = stop;
+        Predicate current = new Predicate("current_station");
+        current.addTerm(new StringTermImpl(stop.getID()));
+        train.addSharedBelief(train.getName(), new Literal(current));
+    }
+
+    public void notifyArrival(Stop stop){
+        Predicate current = new Predicate("arrived_at");
+        current.addTerm(new StringTermImpl(stop.getID()));
+        train.addSharedBelief(train.getName(), new Literal(current));
+        System.out.println("Arrived: " + current);
+    }
+
+    public Stop getCurrentStation() {
+        return currentStation;
+    }
+
+    private void setNextStation(Station station){
+        this.nextStation = station;
+        Predicate next = new Predicate("next_station");
+        if(nextStation != null) {
+            next.addTerm(new StringTermImpl(station.getID()));
+            train.addSharedBelief(train.getName(), new Literal(next));
+        }else{
+            train.removeSharedBelief(train.getName(), new Literal(next));
         }
-        calculateBestRoute();
     }
 
-    private boolean calculateBestRoute() {
-        Node sourceNode = this.source.node;
-        Node targetNode = this.target.node;
-
-        Dijkstra dijkstra = new Dijkstra(Dijkstra.Element.EDGE, "weight", null);
-        dijkstra.init(railway.network);
-        dijkstra.setSource(sourceNode);
-        dijkstra.compute();
-
-        Path result = dijkstra.getPath(targetNode);
-        if (result == null || result.empty()) {
-            return false;
+    private void setTargetStation(Station station){
+        this.targetStation = station;
+        Predicate next = new Predicate("target_station");
+        if(nextStation != null) {
+            next.addTerm(new StringTermImpl(station.getID()));
+            train.addSharedBelief(train.getName(), new Literal(next));
+        }else{
+            train.removeSharedBelief(train.getName(), new Literal(next));
         }
+    }
 
-        if(!result.equals(shortest)){
-            reroutes += 1;
+
+
+    private void setNextSignallingBox(Station station){
+        this.nextStation = station;
+        Predicate next = new Predicate("next_station");
+        if(nextStation != null) {
+
+            next.addTerm(new StringTermImpl(station.getID()));
+            train.addSharedBelief(train.getName(), new Literal(next));
+        }else{
+            train.removeSharedBelief(train.getName(), new Literal(next));
         }
-
-        this.shortest = result.getNodeSet();
-        shortest.remove(sourceNode);
-        return true;
-    }
-
-    public Stop getNextStop(){
-        Node nextNode = shortest.iterator().next();
-        Optional<Stop> nextStop = railway.getStop(nextNode);
-        return nextStop.orElse(null);
     }
 
 
-    public void setSource(SimNode source) throws Exception {
-        this.source = source;
-        if(!calculateBestRoute()){
-            throw new Exception("An invalid source has been set!");
+    private void setNextJunction(SignalBox signalBox){
+        this.nextJunction = signalBox;
+        Predicate next = new Predicate("next_junction");
+        if(nextJunction != null) {
+            next.addTerm(new StringTermImpl(signalBox.getID()));
+            train.addSharedBelief(train.getName(), new Literal(next));
+        }else{
+            train.removeSharedBelief(train.getName(), new Literal(next));
         }
-        calculateBestRoute();
     }
 
-    public SimNode getSource() {
-        return source;
-    }
-
-    public void setTarget(SimNode target) throws Exception {
-        this.target = target;
-        if(!calculateBestRoute()){
-            throw new Exception("An invalid target has been set!");
+    public Optional<Track> getCurrentTrack(){
+        Optional<Stop> nextPath = getNextPath();
+        if(nextPath.isPresent()){
+            return railway.getTrackBetween(currentStation.getSimNode().node, nextPath.get().getSimNode().node);
         }
-        calculateBestRoute();
+        return Optional.empty();
     }
 
-    public SimNode getTarget() {
-        return target;
+    public Station getTargetStation() {
+        return targetStation;
+    }
+
+    public Station getNextStation() {
+        return nextStation;
+    }
+
+    public void highlightTracks(){
+        tracks.forEach(track -> {
+            track.setStyle("highlighted");
+        });
     }
 
     @Override
     public String toString() {
-        return "ATRoute{" +
-                "source=" + source +
-                ", target=" + target +
-                ", shortest=" + shortest +
-                ", reroutes=" + reroutes +
-                '}';
+        return shortest.stream()
+                .map(Stop::getID)  // Get the ID of each Stop
+                .collect(Collectors.joining(" -> "));  // Join them with " -> "
     }
 }
